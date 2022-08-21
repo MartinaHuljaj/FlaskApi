@@ -8,16 +8,18 @@ import tensorflow as tf
 import pickle
 
 
-def splittingTheLine(image_path):
+def splittingTheLine(image, file_name):
     
     #read the image of lines
-    img = Image.open(image_path)
-    file_name=os.path.basename(image_path).split('.')[0]
+    # img = Image.open(image_path)
+    # file_name=os.path.basename(image_path).split('.')[0]
     print(file_name)
+    img=Image.fromarray(image)
     #get the size of image
     img_w,img_h=img.size
     print(img_w)
     print(img_h)
+    img_path=file_name+'.jpg'
 
 
     #image height to 64 pixels
@@ -44,17 +46,19 @@ def splittingTheLine(image_path):
     print(number_of_images)
     padding_img = Image.new(mode="RGB",size= (img_w+padding_left_right, 64),color= (255, 255, 255))
     padding_img.paste(img, (padding_left_right, 0))
-    padding_img.save(image_path)
+    padding_img.save(img_path)
     print(padding_img.size)
-
-    if number_of_images>1:
-        parts_of_image=slice(image_path, col=number_of_images, row=1)
-    print(parts_of_image[0])
     image_names=[]
-    for image in parts_of_image:
-        image_names.append(image_slicer.main.Tile.generate_filename(image,directory=os.path.dirname(image_path), prefix=file_name, format='png', path=True))
-    print(image_names)
-    return image_names
+    if number_of_images>1:
+        parts_of_image=slice(img_path, col=number_of_images, row=1)
+        
+        for image in parts_of_image:
+            image_names.append(image_slicer.main.Tile.generate_filename(image,directory=os.path.dirname(img_path), prefix=file_name, format='png', path=True))
+        print(image_names)
+        return image_names
+    else:
+        image_names.append(img_path)
+        return image_names
 
 
 def saving_images(image_paths):
@@ -74,4 +78,3 @@ def get_data(path):
     data=np.array(final_image_parts)
     return data
 
-get_data("C:\\Users\\mhuljaj\\Documents\\TestiranjeOcr\\lines.png")
